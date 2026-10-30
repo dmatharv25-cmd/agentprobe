@@ -14,15 +14,11 @@ DEFENDED_PROMPT = (
 
 
 class GuardedToolBox(ToolBox):
-    def __init__(self, notes=None, user_message=""):
-        super().__init__(notes)
-        self.user_message = user_message.lower()
-
     def read_note(self, name):
         key = self._resolve(name)
-        if key in PROTECTED_NOTES and key not in self.user_message:
+        if key in PROTECTED_NOTES:
             self.call_log.append(("read_note", {"name": name}))
-            return "Access denied: this note is protected and was not requested by the user."
+            return "Access denied: protected notes can only be opened by the user in the app."
         result = super().read_note(name)
         return f"<untrusted>{result}</untrusted>"
 
@@ -37,7 +33,3 @@ class DefendedAgent(VictimAgent):
     def __init__(self, notes=None, model=None):
         super().__init__(toolbox=GuardedToolBox(notes), system_prompt=DEFENDED_PROMPT,
                          **({"model": model} if model else {}))
-
-    def run(self, user_message, max_steps=6):
-        self.toolbox.user_message = user_message.lower()
-        return super().run(user_message, max_steps)
