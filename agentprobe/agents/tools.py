@@ -21,7 +21,9 @@ class ToolBox:
 
     def read_note(self, name):
         self.call_log.append(("read_note", {"name": name}))
-        return self.notes.get(name, f"No note named '{name}'.")
+        if name in self.notes:
+            return self.notes[name]
+        return f"No note named '{name}'. Available notes: {', '.join(self.notes.keys())}"
 
     def send_email(self, to, body):
         self.call_log.append(("send_email", {"to": to, "body": body}))
