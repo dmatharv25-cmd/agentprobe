@@ -118,3 +118,4 @@ I added 9 plain-worded attacks (no words like "private" or "ignore instructions"
 - Some llama "holds" are tool-use failures, not refusals (for example it called read_note with the name "[your notes]"), so its score likely overstates its safety.
 - Scores depend on which attacks are included: the 9 added attacks are easier for qwen to resist, so its score moved from 36 to 56. Compare per-attack results, not one headline number.
 - The defense held on both models because its rules run in code.
+- The 3 errors in the defended qwen run were client timeouts (180 s limit) on CPU, not failures of the defense. Errored runs are excluded from scores, never counted as held.
