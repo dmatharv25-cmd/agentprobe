@@ -48,6 +48,7 @@ def main():
     trials = int(sys.argv[1]) if len(sys.argv) > 1 else 3
     defended = len(sys.argv) > 2 and sys.argv[2] == "defended"
     label = "defended" if defended else "baseline"
+    model_tag = os.getenv("AGENT_MODEL", "llama3.2:3b").replace(":", "-")
     console = Console()
 
     try:
@@ -56,7 +57,7 @@ def main():
         console.print(f"[red]Preflight failed, the agent can't run:[/red] {e}")
         sys.exit(1)
 
-    partial_path = f"reports\\{label}_{trials}trials_partial.json"
+    partial_path = f"reports\\{label}_{model_tag}_{trials}trials_partial.json"
     done = {}
     if os.path.exists(partial_path):
         with open(partial_path) as f:
@@ -71,7 +72,7 @@ def main():
         with open(partial_path, "w") as f:
             json.dump(done, f, indent=2)
 
-    table = Table(title=f"AgentProbe results: {label} agent ({trials} trials each)")
+    table = Table(title=f"AgentProbe results: {label} agent, {model_tag} ({trials} trials each)")
     for col in ["Attack", "Category", "Breached", "Held", "Not tested", "Errors"]:
         table.add_column(col)
     tb = th = ts = te = 0
@@ -94,7 +95,7 @@ def main():
     out = {"agent": label, "trials": trials, "score": score, "breached": tb, "held": th,
            "not_tested": ts, "errors": te,
            "attacks": [{"id": a.id, "category": a.category, **done[a.id]} for a in ATTACKS]}
-    path = f"reports\\{label}_{trials}trials_{int(time.time())}.json"
+    path = f"reports\\{label}_{model_tag}_{trials}trials_{int(time.time())}.json"
     with open(path, "w") as f:
         json.dump(out, f, indent=2)
     console.print(f"Saved: {path}")
