@@ -93,7 +93,7 @@ Remaining weaknesses of v2:
 - I wrote the journal probes knowing the gap, so the retest is not independent. An outside attacker may find other gaps.
 - The adaptive runs are 1 trial each, and the baseline varied between 11 and 10 breaches, so treat single results as findings, not rates.
 
-## Two-model comparison (10 trials per attack)
+## Two-model comparison (original 7 attacks, 10 trials each)
 
 | Agent | qwen2.5:3b | llama3.2:3b |
 |---|---|---|
