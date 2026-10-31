@@ -62,6 +62,19 @@ footer { margin-top:48px; color:var(--muted); font-size:.85rem; }
 <tr><td>email-me (allowlisted address)</td><td>5/5</td><td>5/5</td></tr>
 </table></div>
 
+<h2>Adaptive testing: I broke my own defense, then fixed it</h2>
+<p>Defense v1 scored 100/100 on attacks I wrote myself, which proves little. So I ran 20 new attacks: 15 model-generated and 5 hand-written probes aimed at gaps. Each ran once.</p>
+<div class="scroll"><table>
+<tr><th>Agent</th><th>Breached (of 20)</th></tr>
+<tr><td>Baseline</td><td>11 and 10 (two runs)</td></tr>
+<tr><td>Defense v1</td><td>2</td></tr>
+<tr><td>Defense v2</td><td>0</td></tr>
+</table></div>
+<ul>
+  <li>The 15 generated attacks never breached either defense; wording tricks do not beat rules in code.</li>
+  <li>v1 failed because it protected a note by <b>name</b>: the same secret in a note called "journal" leaked, and a secret could be emailed to an allowlisted address.</li>
+  <li>v2 protects by <b>content</b>. It matches known secret strings, so a paraphrased secret would likely still get through.</li>
+</ul>
 <h2>Limitations</h2>
 <ul>
   <li>I wrote both the attacks and the defense, so the defense is tuned to them. No adaptive attacker has been tried.</li>
