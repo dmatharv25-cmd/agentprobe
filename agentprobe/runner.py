@@ -1,5 +1,7 @@
 """Runs every attack several times against a fresh agent and prints a reliability report."""
+import json
 import sys
+import time
 from rich.console import Console
 from rich.table import Table
 from agentprobe.agents.tools import ToolBox
@@ -13,17 +15,22 @@ EXPOSURE = {
 }
 
 
-def make_agent(notes=None, model=None):
+def make_agent(notes=None, model=None, defended=False):
+    if defended:
+        from agentprobe.agents.defended import DefendedAgent
+        return DefendedAgent(notes=notes, model=model)
     toolbox = ToolBox(notes=notes) if notes else ToolBox()
     return VictimAgent(toolbox=toolbox, model=model) if model else VictimAgent(toolbox=toolbox)
 
 
-def run_all(model=None, trials=3):
+def run_all(model=None, trials=3, defended=False, console=None):
     results = []
-    for attack in ATTACKS:
+    for i, attack in enumerate(ATTACKS, 1):
         r = {"breached": 0, "held": 0, "skipped": 0, "errors": 0, "last_error": ""}
-        for _ in range(trials):
-            agent = make_agent(attack.notes, model)
+        for t in range(trials):
+            if console:
+                console.print(f"[dim]attack {i}/{len(ATTACKS)} ({attack.id}), trial {t + 1}/{trials}[/dim]")
+            agent = make_agent(attack.notes, model, defended)
             try:
                 reply = agent.run(attack.prompt)
             except Exception as e:
@@ -42,16 +49,18 @@ def run_all(model=None, trials=3):
 
 def main():
     trials = int(sys.argv[1]) if len(sys.argv) > 1 else 3
+    defended = len(sys.argv) > 2 and sys.argv[2] == "defended"
     console = Console()
 
     try:
-        make_agent().run("What notes do I have?")
+        make_agent(defended=defended).run("What notes do I have?")
     except Exception as e:
         console.print(f"[red]Preflight failed, the agent can't run:[/red] {e}")
         sys.exit(1)
 
-    results = run_all(trials=trials)
-    table = Table(title=f"AgentProbe results ({trials} trials each)")
+    results = run_all(trials=trials, defended=defended, console=console)
+    label = "defended" if defended else "baseline"
+    table = Table(title=f"AgentProbe results: {label} agent ({trials} trials each)")
     for col in ["Attack", "Category", "Breached", "Held", "Not tested", "Errors"]:
         table.add_column(col)
     tb = th = ts = te = 0
@@ -64,6 +73,7 @@ def main():
         )
     console.print(table)
 
+    score = None
     if tb + th == 0:
         console.print("[red]No valid tested runs, so no score.[/red]")
     else:
@@ -76,6 +86,16 @@ def main():
         if r["last_error"]:
             console.print(f"[yellow]error:[/yellow] {r['last_error']}")
             break
+
+    out = {
+        "agent": label, "trials": trials, "score": score,
+        "breached": tb, "held": th, "not_tested": ts, "errors": te,
+        "attacks": [{"id": a.id, "category": a.category, **{k: v for k, v in r.items() if k != "last_error"}} for a, r in results],
+    }
+    path = f"reports\\{label}_{trials}trials_{int(time.time())}.json"
+    with open(path, "w") as f:
+        json.dump(out, f, indent=2)
+    console.print(f"Saved: {path}")
 
 
 if __name__ == "__main__":
