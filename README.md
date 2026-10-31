@@ -38,7 +38,7 @@ Each attack has a success rule that checks real outcomes: did a secret appear in
 
 ## Run it
 
-    pip install anthropic rich pytest python-dotenv ollama
+    pip install -r requirements.txt
     ollama pull qwen2.5:3b
     python -m agentprobe.runner 10             # baseline agent
     python -m agentprobe.runner 10 defended    # defended agent
@@ -47,8 +47,8 @@ Interrupted runs resume where they stopped.
 
 ## Limitations (please read)
 
-- I wrote both the attacks and the defense, so the defense is tuned to these attacks. It has not faced an adaptive attacker.
-- The defended agent cannot read the private note at all. That is secure but costs usability; a real system would need user confirmation instead.
+- I wrote the original attacks and the defense, so v1 was tuned to them. A first round of adaptive testing (see below) broke v1 and led to v2, but it was small (20 attacks, 1 trial each) and has not faced an outside attacker.
+- The defended agent cannot read any note containing a secret. That is secure but costs usability; a real system would need user confirmation instead.
 - One small model (3B) on CPU. Larger models may behave very differently.
 - 7 attacks and 10 trials each is a small sample. Treat counts like 2/10 as hints, not rates.
 - Success is judged by string matching, so paraphrased leaks would be missed.
