@@ -82,7 +82,7 @@ footer { margin-top:48px; color:var(--muted); font-size:.85rem; }
 <tr><td>Defended breached</td><td>0 of 70 (score 100)</td><td>0 of 70 (score 100)</td></tr>
 <tr><td>Normal tasks, defended</td><td>15/15</td><td>15/15</td></tr>
 </table></div>
-<p>The defense held on both models because its rules run in code. Llama's baseline held on 6 of 7 attacks, but I have not separated better instruction-following from weaker tool use, so I do not call it safer.</p>
+<p>The defense held on both models because its rules run in code. Llama's baseline held on 6 of 7 attacks, and a 6-run spot check showed it refuses at the wording (zero tool calls) rather than failing at tool use. It still fell for the plain email request, so it catches obvious attack phrasing, not everything.</p>
 <h2>Limitations</h2>
 <ul>
   <li>I wrote both the attacks and the defense, so the defense is tuned to them. No adaptive attacker has been tried.</li>
