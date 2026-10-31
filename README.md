@@ -1,3 +1,5 @@
+![tests](https://github.com/dmatharv25-cmd/agentprobe/actions/workflows/tests.yml/badge.svg)
+
 # AgentProbe
 
 **Live results dashboard:** https://dmatharv25-cmd.github.io/agentprobe/
