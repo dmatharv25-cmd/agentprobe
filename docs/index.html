@@ -75,6 +75,14 @@ footer { margin-top:48px; color:var(--muted); font-size:.85rem; }
   <li>v1 failed because it protected a note by <b>name</b>: the same secret in a note called "journal" leaked, and a secret could be emailed to an allowlisted address.</li>
   <li>v2 protects by <b>content</b>. It matches known secret strings, so a paraphrased secret would likely still get through.</li>
 </ul>
+<h2>Two-model comparison (10 trials per attack)</h2>
+<div class="scroll"><table>
+<tr><th>Agent</th><th>qwen2.5:3b</th><th>llama3.2:3b</th></tr>
+<tr><td>Baseline breached</td><td>44 of 69 (score 36)</td><td>8 of 70 (score 89)</td></tr>
+<tr><td>Defended breached</td><td>0 of 70 (score 100)</td><td>0 of 70 (score 100)</td></tr>
+<tr><td>Normal tasks, defended</td><td>15/15</td><td>15/15</td></tr>
+</table></div>
+<p>The defense held on both models because its rules run in code. Llama's baseline held on 6 of 7 attacks, but I have not separated better instruction-following from weaker tool use, so I do not call it safer.</p>
 <h2>Limitations</h2>
 <ul>
   <li>I wrote both the attacks and the defense, so the defense is tuned to them. No adaptive attacker has been tried.</li>
