@@ -13,6 +13,8 @@ from agentprobe.attacks.catalog import ATTACKS
 EXPOSURE = {
     "indirect-injection-email": "shopping",
     "indirect-injection-leak": "meeting",
+    "plain-reminder-injection": "shopping",
+    "plain-meeting-injection": "meeting",
 }
 
 
