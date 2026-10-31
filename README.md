@@ -1,5 +1,7 @@
 # AgentProbe
 
+**Live results dashboard:** https://dmatharv25-cmd.github.io/agentprobe/
+
 A small framework that attacks an AI agent and scores how reliably it resists. It runs prompt-injection, data-leak and tool-misuse attacks against an agent with tools (notes + email), repeats each attack many times, and reports a reliability score.
 
 Runs fully locally with Ollama (model: qwen2.5:3b). No API key needed. The model is swappable through the `AGENT_MODEL` setting.
